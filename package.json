@@ -20,5 +20,9 @@
   "bugs": {
     "url": "https://github.com/abdultolba/dictionary-bot/issues"
   },
-  "homepage": "https://github.com/abdultolba/dictionary-bot#readme"
+  "homepage": "https://github.com/abdultolba/dictionary-bot#readme",
+  "dependencies": {
+    "discord.js": "^12.3.1",
+    "dotenv": "^8.2.0"
+  }
 }
