@@ -1,4 +1,6 @@
 require("dotenv").config();
+
+const Discord = require("discord.js");
 const prefix = process.env["COMMAND_PREFIX"];
 
 const discord = {
@@ -8,7 +10,7 @@ const discord = {
    * @returns The number of online users
    */
   getOnlineUsers: users =>
-    users.filter(user => user.presence.status !== "offline" && !user.bot).size,
+    users.cache.filter(user => user.presence.status !== "offline" && !user.bot).size,
 
   /**
    * Gets the first command from the message that was sent.
@@ -29,7 +31,7 @@ const discord = {
    * @return The number of voice channels
    */
   getVoiceChannels: channels =>
-    channels.filter(channel => channel.type === "voice").size,
+    channels.cache.filter(channel => channel.type === "voice").size,
 
   /**
    * Gets the number of text channels in the server.
@@ -37,7 +39,7 @@ const discord = {
    * @return The number of text channels
    */
   getTextChannels: channels =>
-    channels.filter(channel => channel.type === "text").size
+    channels.cache.filter(channel => channel.type === "text").size
 };
 
 const helpers = {

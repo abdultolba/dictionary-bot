@@ -11,8 +11,10 @@ require("dotenv").config();
 const bot = new Discord.Client();
 
 // Get the token and prefix from the .ENV file.
-const token = process.env["DISCORD_TOKEN"];
-const prefix = process.env["BOT_PREFIX"];
+const token = process.env.DISCORD_TOKEN;
+const prefix = process.env.COMMAND_PREFIX;
+
+console.log(token, prefix)
 
 // Check that we have a token in the .env file.
 if (!token) {
