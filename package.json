@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/abdultolba/dictionary-bot#readme",
   "dependencies": {
+    "axios": "^0.20.0",
     "discord.js": "^12.3.1",
     "dotenv": "^8.2.0"
   }

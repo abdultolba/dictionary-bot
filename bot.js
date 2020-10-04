@@ -4,6 +4,8 @@
 */
 const Discord = require("discord.js");
 const util = require("./util");
+const axios = require("axios");
+const { arrayToSentence } = require("./util");
 
 require("dotenv").config();
 
@@ -14,7 +16,7 @@ const bot = new Discord.Client();
 const token = process.env.DISCORD_TOKEN;
 const prefix = process.env.COMMAND_PREFIX;
 
-console.log(token, prefix)
+console.log(token, prefix);
 
 // Check that we have a token in the .env file.
 if (!token) {
@@ -44,7 +46,7 @@ bot.on("ready", () => {
 });
 
 // Message is emitted whenever the bot notices a new message.
-bot.on("message", message => {
+bot.on("message", (message) => {
   // Destructure the message parameter so we don't repeat ourselves.
   const { author, channel, content, createdTimestamp } = message;
 
@@ -54,8 +56,9 @@ bot.on("message", message => {
   // No point dealing with the message if it was sent by a bot!
   if (author.bot) return;
 
-  // Get the the command if it was the first word that was sent.
-  const command = util.discord.getCommand(message);
+  // Get the the command and any arguments that were sent
+  const args = content.slice(prefix.length).trim().split(" ");
+  const command = args.shift().toLowerCase();
 
   // If the command that was sent matches any of the commands that we have configured...
   if (command === "ping") {
@@ -68,6 +71,63 @@ bot.on("message", message => {
 
     // Send a message to the channel where the initial message came from.
     channel.send("Pong!");
+  } else if (command === "def") {
+    if (!args.length) {
+      return channel.send(
+        `Uh oh, you didn't provide a word to define, <@${author.id}>!`
+      );
+    }
+
+    axios
+      .get(
+        `https://dictionaryapi.com/api/v3/references/collegiate/json/${args[0]}`,
+        {
+          params: {
+            key: process.env.DICTIONARY_KEY,
+          },
+        }
+      )
+      .then(function (response) {
+        let data = response.data[0];
+
+        // If the result is a list of strings, it's not a valid word.
+        if (typeof data !== "object") {
+          const result = new Discord.MessageEmbed()
+            .setTitle(
+              `Invalid word: The word youve entered isnt in the dictionary.`
+            )
+            .setColor(0xff0000);
+          if (!response.data || response.data.length === 0)
+            result.setDescription("");
+          else
+            result.setDescription(
+              "Maybe try one of these suggestions: \n" +
+                arrayToSentence(response.data)
+            );
+          return channel.send(result);
+        }
+
+        let definitions = data.shortdef,
+          type = data.fl,
+          description = "";
+        for (let i = 0; i < definitions.length; i++) {
+          description += `[${i + 1}] ${definitions[i]}`;
+          description += i == definitions.length - 1 ? "" : "\n";
+        }
+
+        return channel.send(
+          new Discord.MessageEmbed()
+            .setTitle(`Definition: ${args[0]} (${type})`)
+            .setColor(0x1af200)
+            .setDescription(description)
+        );
+      })
+      .catch(function (error) {
+        console.log(error);
+        return channel.send(
+          `Sorry, I can't define that at the moment <@${author.id}>!`
+        );
+      });
   }
 });
 

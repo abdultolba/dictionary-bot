@@ -52,7 +52,13 @@ const helpers = {
   convertTime: time => new Date(time).toString()
 };
 
+const arrayToSentence = arr => {
+  let last = arr.pop();
+  return arr.join(', ') + ' or ' + last;
+}
+
 module.exports = {
   discord,
-  helpers
+  helpers,
+  arrayToSentence
 };
