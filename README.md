@@ -11,8 +11,8 @@
 Clone or fork the repo and install dependencies by running `npm install` if using `npm` or `yarn install` if using `yarn`.
 
 #### Add Credentials [WIP]
-1.
-2.
+1. Run `cp .env.example .env` to store your tokens and keys.
+2. Modify the `.env` file to store your `DISCORD_TOKEN` and `COMMAND_PREFIX` (default `!`)
 
 #### Running the bot
 Simply run `node bot.js` or `nodemon bot.js` if using nodemon
