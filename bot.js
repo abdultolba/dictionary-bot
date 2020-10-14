@@ -115,12 +115,26 @@ bot.on("message", (message) => {
           description += i == definitions.length - 1 ? "" : "\n";
         }
 
-        return channel.send(
+        let audio = data.hwi.prs[0].sound.audio;
+        let subdirectory = '';
+
+        // @see https://dictionaryapi.com/products/json#sec-2.prs for documenation regarding audio URL's
+        if(audio.startsWith('bix')) subdirectory = 'bix'
+        else if(audio.startsWith('gg')) subdirectory = 'gg'
+        else if(!!audio.match(/^[.,:!?]/) || !!audio.match(/^[0-9]/)) subdirectory = 'number'
+        else subdirectory = audio[0]
+        
+        const attachment = new Discord.MessageAttachment(`https://media.merriam-webster.com/audio/prons/en/us/mp3/${subdirectory}/${audio}.mp3`);
+
+        channel.send(
           new Discord.MessageEmbed()
             .setTitle(`Definition: ${args[0]} (${type})`)
             .setColor(0x1af200)
             .setDescription(description)
+            .setFooter('Dictionary Bot v0.1')
         );
+
+        channel.send(`${args[0]} is pronounced as [${data.hwi.prs[0].mw}]:` , attachment);
       })
       .catch(function (error) {
         console.log(error);
