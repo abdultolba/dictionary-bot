@@ -14,7 +14,7 @@ const bot = new Discord.Client();
 
 // Get the token and prefix from the .ENV file.
 const token = process.env.DISCORD_TOKEN;
-const prefix = process.env.COMMAND_PREFIX;
+const prefix = process.env.COMMAND_PREFIX || "!";
 
 console.log(token, prefix);
 
@@ -71,6 +71,8 @@ bot.on("message", (message) => {
 
     // Send a message to the channel where the initial message came from.
     channel.send("Pong!");
+  } else if (command === "wotd") {
+    return channel.send("https://www.merriam-webster.com/word-of-the-day");
   } else if (command === "def") {
     if (!args.length) {
       return channel.send(
@@ -116,25 +118,31 @@ bot.on("message", (message) => {
         }
 
         let audio = data.hwi.prs[0].sound.audio;
-        let subdirectory = '';
+        let subdirectory = "";
 
         // @see https://dictionaryapi.com/products/json#sec-2.prs for documenation regarding audio URL's
-        if(audio.startsWith('bix')) subdirectory = 'bix'
-        else if(audio.startsWith('gg')) subdirectory = 'gg'
-        else if(!!audio.match(/^[.,:!?]/) || !!audio.match(/^[0-9]/)) subdirectory = 'number'
-        else subdirectory = audio[0]
-        
-        const attachment = new Discord.MessageAttachment(`https://media.merriam-webster.com/audio/prons/en/us/mp3/${subdirectory}/${audio}.mp3`);
+        if (audio.startsWith("bix")) subdirectory = "bix";
+        else if (audio.startsWith("gg")) subdirectory = "gg";
+        else if (!!audio.match(/^[.,:!?]/) || !!audio.match(/^[0-9]/))
+          subdirectory = "number";
+        else subdirectory = audio[0];
+
+        const attachment = new Discord.MessageAttachment(
+          `https://media.merriam-webster.com/audio/prons/en/us/mp3/${subdirectory}/${audio}.mp3`
+        );
 
         channel.send(
           new Discord.MessageEmbed()
             .setTitle(`Definition: ${args[0]} (${type})`)
             .setColor(0x1af200)
             .setDescription(description)
-            .setFooter('Dictionary Bot v0.1')
+            .setFooter("Dictionary Bot v0.1")
         );
 
-        channel.send(`${args[0]} is pronounced as [${data.hwi.prs[0].mw}]:` , attachment);
+        channel.send(
+          `${args[0]} is pronounced as [${data.hwi.prs[0].mw}]:`,
+          attachment
+        );
       })
       .catch(function (error) {
         console.log(error);
