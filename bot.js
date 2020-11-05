@@ -61,17 +61,7 @@ bot.on("message", (message) => {
   const command = args.shift().toLowerCase();
 
   // If the command that was sent matches any of the commands that we have configured...
-  if (command === "ping") {
-    // It's nice to have a log of when the command was sent for future reference along with the person that sent it.
-    console.log(
-      `Command [${prefix + command}] Received from ${
-        author.username
-      } at ${util.helpers.convertTime(createdTimestamp)}`
-    );
-
-    // Send a message to the channel where the initial message came from.
-    channel.send("Pong!");
-  } else if (command === "wotd") {
+  if (command === "wotd") {
     return channel.send("https://www.merriam-webster.com/word-of-the-day");
   } else if (command === "def") {
     if (!args.length) {
@@ -150,6 +140,33 @@ bot.on("message", (message) => {
           `Sorry, I can't define that at the moment <@${author.id}>!`
         );
       });
+  } else if (command == "dhelp") {
+    let embed = new Discord.MessageEmbed()
+      .setColor("#CD5455")
+      .setAuthor(
+        "Dictionary Bot",
+        "https://store-images.s-microsoft.com/image/apps.58165.13510798887401125.12b4a997-5167-4329-a40a-077b2f42e171.8151e6d6-8fee-4b09-9851-4df7bf4e7c72?mode=scale&q=90&h=300&w=300",
+        "https://www.github.com/abdultolba/dictionary-bot"
+      )
+      .setTitle("Commands")
+      .addFields(
+        {
+          name: "!def <word>",
+          value: "Retrieve the definition(s) for a given word",
+        },
+        {
+          name: "!wotd",
+          value: "Retrieve's Merriam Websters *Word of the Day*.",
+        },
+        {
+          name: "!dhelp",
+          value: "Retrieve a list of commands for the dictionary bot.",
+        }
+      )
+      .setTimestamp()
+      .setFooter("Dictionary Bot v1.0.0");
+
+    return channel.send(embed);
   }
 });
 
