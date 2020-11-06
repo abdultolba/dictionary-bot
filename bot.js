@@ -11,6 +11,7 @@ require("dotenv").config();
 
 // Create a new instance of the Discord Client Class.
 const bot = new Discord.Client();
+bot.user.setActivity('!def | !wotd', { type: 'LISTENING' });
 
 // Get the token and prefix from the .ENV file.
 const token = process.env.DISCORD_TOKEN;
