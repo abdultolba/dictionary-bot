@@ -11,7 +11,6 @@ require("dotenv").config();
 
 // Create a new instance of the Discord Client Class.
 const bot = new Discord.Client();
-bot.user.setActivity('!def | !wotd', { type: 'LISTENING' });
 
 // Get the token and prefix from the .ENV file.
 const token = process.env.DISCORD_TOKEN;
@@ -33,6 +32,7 @@ if (!prefix) {
 
 // Ready is emitted whenever a message is created.
 bot.on("ready", () => {
+  bot.user.setActivity('!def | !wotd', { type: 'LISTENING' });
   const { discord } = util;
   // A little message to show that the bot has connected.
   console.log(
